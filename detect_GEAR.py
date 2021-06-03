@@ -4,7 +4,7 @@ import numpy as np
 def count_teeth(raw_image, teeths):
     
     raw_image = cv.imread(raw_image)
-    blank_image = np.copy(raw_image)
+    # blank_image = np.copy(raw_image)
     # cv.imshow('gray image', gray_image)
 
     bilateral_filter_image = cv.bilateralFilter(raw_image, 5, 175, 175)
@@ -25,7 +25,7 @@ def count_teeth(raw_image, teeths):
         if((len(approx) > 5) & (len(approx) < 25) & (area > 50)):
             contours_list.append(c)
 
-    cv.drawContours(blank_image, contours_list, -1, (0,255,0), 1)
+    # cv.drawContours(raw_image, contours_list, -1, (0,255,0), 1)
     # cv.imshow('contours', blank_image)
     contour_length = f"number of contours detected : {len(ret)}"
     # print(contour_length)
@@ -36,7 +36,7 @@ def count_teeth(raw_image, teeths):
     contour_X = int (M["m10"] / M["m00"])
     contour_Y = int(M["m01"] / M["m00"])
 
-    center = cv.circle(blank_image, (contour_X,contour_Y), 3, (0,0,255), -1)
+    center = cv.circle(raw_image, (contour_X,contour_Y), 3, (0,0,255), -1)
     # cv.imshow('contours', raw_image)
 
     #curve of contour
@@ -54,16 +54,16 @@ def count_teeth(raw_image, teeths):
                 curve_near.append(i)
 
     curve_near = np.asarray(curve_near)
-    cv.drawContours(blank_image, contour[curve_near], -1, (0,0,255), 3)
+    cv.drawContours(raw_image, contour[curve_near], -1, (0,0,255), 3)
 
     # cv.imshow('points on curve', raw_image)
     teeths = len(contour[curve_near])
-    # cv.putText(blank_image,f'{teeths}',(contour_X-20, contour_Y-10), cv.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
-    print(f'Number of teeths found = {teeths}')
-    
-    # cv.imshow('teeths on the gear', blank_image)
+    cv.putText(raw_image,f'{teeths}',(20,20), cv.FONT_HERSHEY_PLAIN, 1, (0,0,255))
+    # print(f'Number of teeths found = {teeths}')
+    # cv.imshow('teeths on the gear', raw_image)
+
     return teeths
-# raw_image = 'gear5.jpg'
+# raw_image = 'gear.jpg'
 # teeths =0
 # count_teeth(raw_image, teeths)
 # cv.waitKey(0)
