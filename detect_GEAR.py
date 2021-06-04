@@ -1,9 +1,10 @@
 import cv2 as cv 
 import numpy as np
 
-def count_teeth(raw_image, teeths):
+def count_teeth(image, teeths):
     
-    raw_image = cv.imread(raw_image)
+    raw_image = cv.imread(image)
+
     # blank_image = np.copy(raw_image)
     # cv.imshow('gray image', gray_image)
 
@@ -61,9 +62,10 @@ def count_teeth(raw_image, teeths):
     cv.putText(raw_image,f'{teeths}',(20,20), cv.FONT_HERSHEY_PLAIN, 1, (0,0,255))
     # print(f'Number of teeths found = {teeths}')
     # cv.imshow('teeths on the gear', raw_image)
-
+    # cv.waitKey(0)
     return teeths
-# raw_image = 'gear.jpg'
+
+# image = 'gear.jpg'
 # teeths =0
-# count_teeth(raw_image, teeths)
+# count_teeth(image, teeths)
 # cv.waitKey(0)

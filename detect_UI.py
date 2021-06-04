@@ -5,6 +5,7 @@ import time
 from detect_GEAR import count_teeth
 import os 
 import glob
+import numpy as np
 
 #class for main app
 class App:
@@ -25,33 +26,20 @@ class App:
         Trigger_b= Button(self.video_frame, text="Trigger", width=40, padx=5, pady=10,command = self.snapshot)
         Trigger_b.grid(row=1, column=0, pady=10)
 
-        #getting latest picture 
-        path = r'Images'
-        file_type = '.jpg'
-        images_gear = glob.glob(path + file_type)
-        print(images_gear)
-        self.raw_image = 'gear.jpg'
-        self.teeths = 0
-        num = count_teeth(self.raw_image, self.teeths)
-
         # buttons beside frame...............
         Reset_b= Button(self.window, text="Reset", pady=5, width=10, padx=5, command= self.reset)
         Reset_b.grid(row=4, column=1)
 
-        teeth_frame = LabelFrame(self.window, padx=5, pady=5)
-        teeth_frame.grid(row=6, column=1, padx=10)
-        teeths_l = Label(teeth_frame, text="Teeths")
-        teeths_l.grid(row=0, column=1)
-        teeths_no = Label(teeth_frame, text=f'{num}', width=10)
-        teeths_no.grid(row=1 ,column=1)
-
-        indicator_bg = 'Green'
-        indicator_text = 'PASS'
-        if not num > 40:
-            indicator_bg = 'Red'
-            indicator_text = 'FAIL'
-        Indicator = Label(self.window, text=indicator_text, width=12, height=3, background=indicator_bg)        
-        Indicator.grid(row=2 ,column=1)
+        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3)        
+        self.Indicator.grid(row=2 ,column=1) 
+        
+        self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.teeth_frame.grid(row=6, column=1, padx=10)
+        self.teeths_l = Label(self.teeth_frame, text="Teeths")
+        self.teeths_l.grid(row=0, column=1)
+        self.teeths_no = Label(self.teeth_frame, text='_', width=10)
+        self.teeths_no.grid(row=1 ,column=1)
+        
         
         pass_frame = LabelFrame(self.window, padx=5, pady=5)
         pass_frame.grid(row=8, column=1, padx=15)
@@ -92,30 +80,64 @@ class App:
 
     def snapshot(self):
         #get frame from video source
-        path = 'Images'
-        file_type = '.jpg'
-        if not os.path.exists(path):
+        self.path = 'Images'
+        self.file_type = '.jpg'
+        if not os.path.exists(self.path):
             os.makedirs(path)
         check, frame = self.vid.getFrame()   
         if check:
-            gear_name = "IMG-" + time.strftime("%m-%d-%H-%M-%S") + file_type
+            gear_name = "IMG-" + time.strftime("%m-%d-%H-%M-%S") + self.file_type
             frame_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            cv.imwrite(os.path.join(path, gear_name), frame_image)
+            cv.imwrite(os.path.join(self.path, gear_name), frame_image)
 
         # destroying video and replacing it with clicked photo
         self.canvas.destroy()
-        gear_photo_name = path + '/' + gear_name
+        self.gear_photo_name = self.path + '/' + gear_name
         canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         canvas.grid(row =0 , column =0)
-        self.vid = ImageTk.PhotoImage(Image.open(f'{gear_photo_name}'))
+        self.vid = ImageTk.PhotoImage(Image.open(f'{self.gear_photo_name}'))
         canvas.create_image(0,0, image=self.vid, anchor=NW)
 
+        self.teeths = 0
+        self.num_teeth = count_teeth(f'{self.gear_photo_name}', self.teeths)
+        print(self.num_teeth)
+
+        self.indicator_text = 'PASS/FAIL'
+        if self.num_teeth < 40:
+            self.indicator_bg = 'Red'
+            self.indicator_text = 'FAIL'
+        else :
+            self.indicator_bg = 'Green'
+            self.indicator_text = 'PASS'    
+
+        self.Indicator = Label(self.window, text=self.indicator_text, width=12, height=3, background=self.indicator_bg)        
+        self.Indicator.grid(row=2 ,column=1) 
+        
+        self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.teeth_frame.grid(row=6, column=1, padx=10)
+        self.teeths_l = Label(self.teeth_frame, text="Teeths")
+        self.teeths_l.grid(row=0, column=1)
+        self.teeths_no = Label(self.teeth_frame, text=f'{self.num_teeth}', width=10)
+        self.teeths_no.grid(row=1 ,column=1) 
+         #getting latest picture 
+        
     def reset(self):        
         self.vid = Gear_capture(self.Video_source)
         self.label = Label(self.window, text= "Gear Detector", font=15)
         #creating a canvas for video
         self.canvas= Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         self.canvas.grid(row=0, column=0)
+
+        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3)        
+        self.Indicator.grid(row=2 ,column=1) 
+        
+        self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.teeth_frame.grid(row=6, column=1, padx=10)
+        self.teeths_l = Label(self.teeth_frame, text="Teeths")
+        self.teeths_l.grid(row=0, column=1)
+        self.teeths_no = Label(self.teeth_frame, text='_', width=10)
+        self.teeths_no.grid(row=1 ,column=1)
+
 
         self.update()
         
@@ -141,19 +163,7 @@ class Gear_capture:
                 return (check, None)
         else:
             return (None)
-
-    def stop(self, Video_source=0):
-        self.vid =cv.VideoCapture(Video_source)
-        if self.vid.isOpened():
-            cv.waitKey(-1)
-
-    # def start(self, Video_source=0):
-    #     self.vid =cv.VideoCapture(Video_source)
-    #     if self.vid.isOpened():
-    #         cv.waitKey(0)        
-             
-        # Release the video source when the object is destroyed
-                   
+                  
 if __name__ == "__main__":
     App()
 
