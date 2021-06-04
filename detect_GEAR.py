@@ -26,7 +26,7 @@ def count_teeth(image, teeths):
         if((len(approx) > 5) & (len(approx) < 25) & (area > 50)):
             contours_list.append(c)
 
-    # cv.drawContours(raw_image, contours_list, -1, (0,255,0), 1)
+    cv.drawContours(raw_image, contours_list, -1, (0,0,255), 2)
     # cv.imshow('contours', blank_image)
     contour_length = f"number of contours detected : {len(ret)}"
     # print(contour_length)
@@ -42,7 +42,7 @@ def count_teeth(image, teeths):
 
     #curve of contour
     curve = cv.convexHull(contour, clockwise=True, returnPoints= False)
-    # cv.drawContours(blank_image, contour[curve], -1, (0,0,255), 2)
+    cv.drawContours(raw_image, contour[curve], -1, (0,0,255), 2)
 
     #combibining near by curve points
     curve_near = []
@@ -55,17 +55,16 @@ def count_teeth(image, teeths):
                 curve_near.append(i)
 
     curve_near = np.asarray(curve_near)
-    cv.drawContours(raw_image, contour[curve_near], -1, (0,0,255), 3)
+    cv.drawContours(raw_image, contour[curve_near], -1, (255,0,0), 5)
 
     # cv.imshow('points on curve', raw_image)
     teeths = len(contour[curve_near])
     cv.putText(raw_image,f'{teeths}',(20,20), cv.FONT_HERSHEY_PLAIN, 1, (0,0,255))
-    # print(f'Number of teeths found = {teeths}')
-    # cv.imshow('teeths on the gear', raw_image)
+    print(f'Number of teeths found = {teeths}')
     # cv.waitKey(0)
-    return teeths
+    image = raw_image
+    return (teeths)
 
-# image = 'gear.jpg'
-# teeths =0
-# count_teeth(image, teeths)
-# cv.waitKey(0)
+image = 'gear.jpg'
+teeths =0
+count_teeth(image, teeths)
