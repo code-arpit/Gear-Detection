@@ -83,7 +83,7 @@ class App:
         self.path = 'Images'
         self.file_type = '.jpg'
         if not os.path.exists(self.path):
-            os.makedirs(path)
+            os.makedirs(self.path)
         check, frame = self.vid.getFrame()   
         if check:
             gear_name = "IMG-" + time.strftime("%m-%d-%H-%M-%S") + self.file_type
