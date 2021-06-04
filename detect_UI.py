@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 import time
 from detect_GEAR import count_teeth
 import os 
-import glob
 import numpy as np
 
 #class for main app
@@ -13,7 +12,6 @@ class App:
         self.window = Tk()
         self.window.title("Gear detector")
         self.window.resizable=(0,0)
-        self.window.configure(bg='#2a2a2e')
         self.Video_source = Video_source
         self.vid = Gear_capture(self.Video_source)
         self.label = Label(self.window, text= "Gear Detector", font=15)
@@ -23,11 +21,14 @@ class App:
         self.canvas= Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         self.canvas.grid(row=0, column=0)
 
-        Trigger_b= Button(self.video_frame, text="Trigger", width=40, padx=5, pady=10,command = self.snapshot)
+        Trigger_b= Button(self.video_frame, text="Trigger", width=30, padx=5, pady=10,command = self.snapshot)
         Trigger_b.grid(row=1, column=0, pady=10)
 
+        Detect_b = Button(self.video_frame, text="Detect Teeths", width=30, padx=5, pady=10,command = self.detect)
+        Detect_b.grid(row=2, column=0, pady=10)
+
         # buttons beside frame...............
-        Reset_b= Button(self.window, text="Reset", pady=5, width=10, padx=5, command= self.reset)
+        Reset_b= Button(self.window, text="Reset", width=10, padx=5, command= self.reset)
         Reset_b.grid(row=4, column=1)
 
         self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3)        
@@ -39,8 +40,7 @@ class App:
         self.teeths_l.grid(row=0, column=1)
         self.teeths_no = Label(self.teeth_frame, text='_', width=10)
         self.teeths_no.grid(row=1 ,column=1)
-        
-        
+                
         pass_frame = LabelFrame(self.window, padx=5, pady=5)
         pass_frame.grid(row=8, column=1, padx=15)
         Pass_l= Label(pass_frame, text="Pass", padx=10)
@@ -96,8 +96,9 @@ class App:
         canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         canvas.grid(row =0 , column =0)
         self.vid = ImageTk.PhotoImage(Image.open(f'{self.gear_photo_name}'))
-        canvas.create_image(0,0, image=self.vid, anchor=NW)
+        canvas.create_image(0,0, image=self.vid, anchor=NW) 
 
+    def detect(self):
         self.teeths = 0
         self.num_teeth = count_teeth(f'{self.gear_photo_name}', self.teeths)
         print(self.num_teeth)
@@ -118,9 +119,8 @@ class App:
         self.teeths_l = Label(self.teeth_frame, text="Teeths")
         self.teeths_l.grid(row=0, column=1)
         self.teeths_no = Label(self.teeth_frame, text=f'{self.num_teeth}', width=10)
-        self.teeths_no.grid(row=1 ,column=1) 
-         #getting latest picture 
-        
+        self.teeths_no.grid(row=1 ,column=1)
+
     def reset(self):        
         self.vid = Gear_capture(self.Video_source)
         self.label = Label(self.window, text= "Gear Detector", font=15)
