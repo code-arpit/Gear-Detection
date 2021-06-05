@@ -2,7 +2,7 @@ from tkinter import *
 import cv2 as cv
 from PIL import Image, ImageTk
 import time
-from detect_GEAR import count_teeth
+from detect_GEAR import detect_teeth
 import os 
 import numpy as np
 
@@ -23,9 +23,6 @@ class App:
 
         Trigger_b= Button(self.video_frame, text="Trigger", width=30, padx=5, pady=10,command = self.snapshot)
         Trigger_b.grid(row=1, column=0, pady=10)
-
-        Detect_b = Button(self.video_frame, text="Detect Teeths", width=30, padx=5, pady=10,command = self.detect)
-        Detect_b.grid(row=2, column=0, pady=10)
 
         # buttons beside frame...............
         Reset_b= Button(self.window, text="Reset", width=10, padx=5, command= self.reset)
@@ -86,23 +83,22 @@ class App:
             os.makedirs(self.path)
         check, frame = self.vid.getFrame()   
         if check:
-            gear_name = "IMG-" + time.strftime("%m-%d-%H-%M-%S") + self.file_type
-            frame_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            cv.imwrite(os.path.join(self.path, gear_name), frame_image)
+            # self.gear_name = "Images/IMG-06-05-11-00-07.jpg"
+            self.gear_name = self.path + '/IMG-' + time.strftime("%m-%d-%H-%M-%S") + self.file_type
+            self.frame_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            cv.imwrite(os.path.join(self.gear_name), self.frame_image)
 
-        # destroying video and replacing it with clicked photo
-        self.canvas.destroy()
-        self.gear_photo_name = self.path + '/' + gear_name
-        canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
-        canvas.grid(row =0 , column =0)
-        self.vid = ImageTk.PhotoImage(Image.open(f'{self.gear_photo_name}'))
-        canvas.create_image(0,0, image=self.vid, anchor=NW) 
-
-    def detect(self):
+        self.detect(self.gear_name)
+        # self.detect('gear.jpg')
+        
+    def detect(self, gear_photo):
         self.teeths = 0
-        self.num_teeth = count_teeth(f'{self.gear_photo_name}', self.teeths)
-        print(self.num_teeth)
+        self.gear_photo = gear_photo
+        self.return_teeth = detect_teeth(self.gear_photo, self.teeths)
+        self.photo_teeth = self.return_teeth.teeth()[0]
+        self.num_teeth = self.return_teeth.teeth()[1]
 
+        #Indicator for pass and fail
         self.indicator_text = 'PASS/FAIL'
         if self.num_teeth < 40:
             self.indicator_bg = 'Red'
@@ -112,7 +108,11 @@ class App:
             self.indicator_text = 'PASS'    
 
         self.Indicator = Label(self.window, text=self.indicator_text, width=12, height=3, background=self.indicator_bg)        
-        self.Indicator.grid(row=2 ,column=1) 
+        self.Indicator.grid(row=2 ,column=1)
+
+        self.new_gear_name = self.path + "/IMG-" + time.strftime("%m-%d-%H-%M-%S-") + self.indicator_text + self.file_type 
+        cv.imwrite(os.path.join(self.new_gear_name), self.photo_teeth) 
+        self.gear_photo_name = self.new_gear_name
         
         self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
         self.teeth_frame.grid(row=6, column=1, padx=10)
@@ -120,6 +120,13 @@ class App:
         self.teeths_l.grid(row=0, column=1)
         self.teeths_no = Label(self.teeth_frame, text=f'{self.num_teeth}', width=10)
         self.teeths_no.grid(row=1 ,column=1)
+
+        # # destroying video and replacing it with clicked photo
+        self.canvas.destroy()
+        canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
+        canvas.grid(row =0 , column =0)
+        self.vid = ImageTk.PhotoImage(Image.open(f'{self.gear_photo_name}'))
+        canvas.create_image(0,0, image=self.vid, anchor=NW) 
 
     def reset(self):        
         self.vid = Gear_capture(self.Video_source)
@@ -137,7 +144,6 @@ class App:
         self.teeths_l.grid(row=0, column=1)
         self.teeths_no = Label(self.teeth_frame, text='_', width=10)
         self.teeths_no.grid(row=1 ,column=1)
-
 
         self.update()
         
@@ -166,8 +172,3 @@ class Gear_capture:
                   
 if __name__ == "__main__":
     App()
-
-
-#doubts
-# 1)refresh function ourside class
-# 2)getting photo 
