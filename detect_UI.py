@@ -28,7 +28,7 @@ class App:
         Reset_b= Button(self.window, text="Reset", width=10, padx=5, command= self.reset)
         Reset_b.grid(row=4, column=1)
 
-        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3)        
+        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3 ,relief="ridge")        
         self.Indicator.grid(row=2 ,column=1) 
         
         self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
