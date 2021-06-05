@@ -28,7 +28,7 @@ class App:
         Reset_b= Button(self.window, text="Reset", width=10, padx=5, command= self.reset)
         Reset_b.grid(row=4, column=1)
 
-        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3 ,relief="ridge")        
+        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3 ,relief="raised")        
         self.Indicator.grid(row=2 ,column=1) 
         
         self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
@@ -107,7 +107,7 @@ class App:
             self.indicator_bg = 'Green'
             self.indicator_text = 'PASS'    
 
-        self.Indicator = Label(self.window, text=self.indicator_text, width=12, height=3, background=self.indicator_bg)        
+        self.Indicator = Label(self.window, text=self.indicator_text, width=12, height=3, background=self.indicator_bg,relief="raised")        
         self.Indicator.grid(row=2 ,column=1)
 
         self.new_gear_name = self.path + "/IMG-" + time.strftime("%m-%d-%H-%M-%S-") + self.indicator_text + self.file_type 
@@ -135,7 +135,7 @@ class App:
         self.canvas= Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         self.canvas.grid(row=0, column=0)
 
-        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3)        
+        self.Indicator = Label(self.window, text='PASS/FAIL', width=12, height=3 ,relief="raised")        
         self.Indicator.grid(row=2 ,column=1) 
         
         self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
