@@ -1,6 +1,7 @@
 from tkinter import *
 import cv2 as cv 
 import numpy as np
+from Config import *
 
 class detect_teeth:
     def __init__(self, image, teeths=0):
@@ -9,11 +10,11 @@ class detect_teeth:
         self.teeths = teeths
         
     def teeth(self):    
-        self.bilateral_filter_image = cv.bilateralFilter(self.raw_image, 5, 175, 175)
+        self.bilateral_filter_image = cv.bilateralFilter(self.raw_image, 5, getBilateralFilter_sigmaColor(), getBilateralFilter_sigmaSpace())
         # cv.imshow('bilateral filtered image', self.bilateral_filter_image)
-        self.blurred_image = cv.medianBlur(self.bilateral_filter_image, 5)
+        self.blurred_image = cv.medianBlur(self.bilateral_filter_image, getMedian_Blurr())
 
-        self.edges_image = cv.Canny(self.blurred_image, 100, 200)
+        self.edges_image = cv.Canny(self.blurred_image, getCanny_thresh1(), getCanny_thresh2())
         # cv.imshow('edges image', self.edges_image)
         ret, contours = cv.findContours(self.edges_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
         self.contours_list = []
@@ -52,7 +53,7 @@ class detect_teeth:
             else:
                 last = self.curve_near[-1]
                 difference = self.contour[i] - self.contour[last]
-                if (cv.norm(difference)>19):
+                if (cv.norm(difference) > getMin_Near_Curve()):
                     self.curve_near.append(i)
 
         self.curve_near = np.asarray(self.curve_near)
@@ -66,9 +67,9 @@ class detect_teeth:
         # print(f'Number of teeths found = {self.teeths}')
         return (self.raw_image, self.teeths)
 
-image = 'gear.jpg'
-c = detect_teeth(image, teeths=0)
+# image = 'gear.jpg'
+# c = detect_teeth(image, teeths=0)
 
-# cv.imshow('ces', c.teeth()[0])
+# cv.imshow('show teeth', c.teeth()[0])
 # print(c.teeth()[1])
 # cv.waitKey(0)

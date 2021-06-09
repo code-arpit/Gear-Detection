@@ -5,16 +5,17 @@ import time
 from detect_GEAR import detect_teeth
 import os 
 import numpy as np
+from Config import *
 
 #class for main app
 class App:
-    def __init__(self, Video_source=0):
+    def __init__(self, Video_source):
         self.window = Tk()
-        self.window.title("Gear detector")
+        self.window.title(getApplication_Name())
         self.window.resizable=(0,0)
         self.Video_source = Video_source
         self.vid = Gear_capture(self.Video_source)
-        self.label = Label(self.window, text= "Gear Detector", font=15)
+        self.label = Label(self.window, text= "Gear Detector", font=25)
         self.video_frame = LabelFrame(self.window, text = 'Gear Image', padx=5, pady=5, width=self.vid.width, height= self.vid.height)
         self.video_frame.grid(row=0, column=0,rowspan=16,padx=20,pady=20)
         #creating a canvas for video
@@ -77,8 +78,8 @@ class App:
 
     def snapshot(self):
         #get frame from video source
-        self.path = 'Images'
-        self.file_type = '.jpg'
+        self.path = getStorage_Path()
+        self.file_type = getFile_Type()
         if not os.path.exists(self.path):
             os.makedirs(self.path)
         check, frame = self.vid.getFrame()   
@@ -171,4 +172,4 @@ class Gear_capture:
             return (None)
                   
 if __name__ == "__main__":
-    App()
+    App(getVideo_Source())
