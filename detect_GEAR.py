@@ -26,7 +26,7 @@ class detect_teeth:
             if((len(approx) > 5) & (len(approx) < 25) & (area > 50)):
                 self.contours_list.append(c)
 
-        cv.drawContours(self.raw_image, self.contours_list, -1, (0,0,255), 2)
+        cv.drawContours(self.raw_image, self.contours_list, -1, (0,0,255), 1)
         # cv.imshow('contours', self.raw_image)
         self.contour_length = f"number of contours detected : {len(ret)}"
         # print(self.contour_length)
@@ -37,7 +37,7 @@ class detect_teeth:
         contour_X = int (M["m10"] / M["m00"])
         contour_Y = int(M["m01"] / M["m00"])
 
-        cv.circle(self.raw_image, (contour_X,contour_Y), 3, (0,0,255), -1)
+        # cv.circle(self.raw_image, (contour_X,contour_Y), 3, (0,0,255), -1)
         # cv.imshow('contours', self.raw_image)
 
         # #curve of contour
@@ -57,7 +57,7 @@ class detect_teeth:
                     self.curve_near.append(i)
 
         self.curve_near = np.asarray(self.curve_near)
-        self.raw_image = cv.drawContours(self.raw_image, self.contour[self.curve_near], -1, (255,0,0), 5)
+        self.raw_image = cv.drawContours(self.raw_image, self.contour[self.curve_near], -1, (255,0,0), 3)
         # cv.imshow('points on curve', self.raw_image)
         # print(self.raw_image)
         self.teeths = len(self.contour[self.curve_near])

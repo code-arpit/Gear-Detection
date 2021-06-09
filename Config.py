@@ -34,5 +34,3 @@ def getCanny_thresh2():
 def getMin_Near_Curve():
     return configDict["Min_Near_Curve"]
 
-print(getMin_Near_Curve())
-print(getCanny_thresh1())
