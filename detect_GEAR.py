@@ -37,13 +37,14 @@ class detect_teeth:
         contour_X = int (M["m10"] / M["m00"])
         contour_Y = int(M["m01"] / M["m00"])
 
-        # cv.circle(self.raw_image, (contour_X,contour_Y), 3, (0,0,255), -1)
+        cv.circle(self.raw_image, (contour_X,contour_Y), 5, (0,255,0), -1)
         # cv.imshow('contours', self.raw_image)
 
         # #curve of contour
         curve = cv.convexHull(self.contour, clockwise=True, returnPoints= False)
-        # cv.drawContours(self.raw_image, self.contour[curve], -1, (0,0,0), 4)
+        cv.drawContours(self.raw_image, self.contour[curve], -1, (0,0,0), 4)
         # cv.imshow('contours', self.raw_image)
+        # print(len(self.contour[curve]))
         
         #combibining near by curve points
         self.curve_near = []
@@ -71,5 +72,5 @@ class detect_teeth:
 # c = detect_teeth(image, teeths=0)
 
 # cv.imshow('show teeth', c.teeth()[0])
-# print(c.teeth()[1])
+# print(c.teeths)
 # cv.waitKey(0)

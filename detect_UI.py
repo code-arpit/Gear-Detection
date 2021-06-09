@@ -97,7 +97,7 @@ class App:
         self.gear_photo = gear_photo
         self.return_teeth = detect_teeth(self.gear_photo, self.teeths)
         self.photo_teeth = self.return_teeth.teeth()[0]
-        self.num_teeth = self.return_teeth.teeth()[1]
+        self.num_teeth = self.return_teeth.teeths
 
         #Indicator for pass and fail
         self.indicator_text = 'PASS/FAIL'
