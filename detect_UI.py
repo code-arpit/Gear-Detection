@@ -39,26 +39,26 @@ class App:
         self.teeths_no = Label(self.teeth_frame, text='_', width=10)
         self.teeths_no.grid(row=1 ,column=1)
                 
-        pass_frame = LabelFrame(self.window, padx=5, pady=5)
-        pass_frame.grid(row=8, column=1, padx=15)
-        Pass_l= Label(pass_frame, text="Pass", padx=10)
-        Pass_l.grid(row=0, column=1)
-        Pass_b= Label(pass_frame, text="10",width=10)
-        Pass_b.grid(row=1, column=1)
+        self.Pass_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.Pass_frame.grid(row=8, column=1, padx=15)
+        self.Pass_l= Label(self.Pass_frame, text="Pass", padx=10)
+        self.Pass_l.grid(row=0, column=1)
+        self.Pass_b= Label(self.Pass_frame, text='_', width=10)
+        self.Pass_b.grid(row=1, column=1)
 
-        fail_frame = LabelFrame(self.window, padx=5, pady=5)
-        fail_frame.grid(row=10, column=1, padx=15)
-        Fail_l= Label(fail_frame, text="Fail", padx=10)
-        Fail_l.grid(row=0, column=1)
-        Fail_b= Label(fail_frame, text="2",width=10)
-        Fail_b.grid(row=1, column=1)
+        self.Fail_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.Fail_frame.grid(row=10, column=1, padx=15)
+        self.Fail_l= Label(self.Fail_frame, text="Fail", padx=10)
+        self.Fail_l.grid(row=0, column=1)
+        self.Fail_b= Label(self.Fail_frame, text='_', width=10)
+        self.Fail_b.grid(row=1, column=1)
 
-        total_frame = LabelFrame(self.window, padx=5, pady=5)
-        total_frame.grid(row=12, column=1, padx=15)
-        Total_l= Label(total_frame, text="Total", padx=10)
-        Total_l.grid(row=0, column=1)
-        Total_b= Label(total_frame, text="12",width=10)
-        Total_b.grid(row=1, column=1)
+        self.Total_frame = LabelFrame(self.window, padx=5, pady=5)
+        self.Total_frame.grid(row=12, column=1, padx=15)
+        self.Total_l= Label(self.Total_frame, text="Total", padx=10)
+        self.Total_l.grid(row=0, column=1)
+        self.Total_b= Label(self.Total_frame, text="_",width=10)
+        self.Total_b.grid(row=1, column=1)
 
         Exit_b = Button(self.window,text="EXIT", padx=5, pady=5,width=10, command = self.window.quit)
         Exit_b.grid(row=14, column=1, padx=5)
@@ -98,7 +98,9 @@ class App:
         self.return_teeth = detect_teeth(self.gear_photo, self.teeths)
         self.photo_teeth = self.return_teeth.teeth()[0]
         self.num_teeth = self.return_teeth.teeths
-
+        self.num_pass = 0 
+        self.num_fail = 0
+        self.num_total = self.num_pass + self.num_fail
         #Indicator for pass and fail
         self.indicator_text = 'PASS/FAIL'
         if self.num_teeth < 40:
@@ -114,15 +116,28 @@ class App:
         self.new_gear_name = self.path + "/IMG-" + time.strftime("%m-%d-%H-%M-%S-") + self.indicator_text + self.file_type 
         cv.imwrite(os.path.join(self.new_gear_name), self.photo_teeth) 
         self.gear_photo_name = self.new_gear_name
+
+        for root, dirs, files in os.walk(self.path):
+                for file in files: 
+                    if file.endswith('PASS.jpg'):
+                        self.num_pass += 1
+                    elif file.endswith('FAIL.jpg'):
+                        self.num_fail += 1         
         
-        self.teeth_frame = LabelFrame(self.window, padx=5, pady=5)
-        self.teeth_frame.grid(row=6, column=1, padx=10)
-        self.teeths_l = Label(self.teeth_frame, text="Teeths")
-        self.teeths_l.grid(row=0, column=1)
         self.teeths_no = Label(self.teeth_frame, text=f'{self.num_teeth}', width=10)
         self.teeths_no.grid(row=1 ,column=1)
 
-        # # destroying video and replacing it with clicked photo
+        self.Pass_b= Label(self.Pass_frame, text=f'{self.num_pass}', width=10)
+        self.Pass_b.grid(row=1, column=1)
+
+        self.Fail_b= Label(self.Fail_frame, text=f'{self.num_fail}',width=10)
+        self.Fail_b.grid(row=1, column=1)
+
+        self.num_total = self.num_pass + self.num_fail
+        self.Total_b= Label(self.Total_frame, text=f'{self.num_total}',width=10)
+        self.Total_b.grid(row=1, column=1)
+
+        # destroying video and replacing it with clicked photo
         self.canvas.destroy()
         canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         canvas.grid(row =0 , column =0)
