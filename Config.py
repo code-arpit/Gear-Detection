@@ -16,6 +16,9 @@ def getStorage_Path():
 def getFile_Type():
     return configDict["File_Type"]
 
+def getDelay_after_snapshot():
+    return configDict["Delay_after_snapshot"]
+
 def getBilateralFilter_sigmaColor():
     return configDict["BilateralFilter_sigmaColor"]
 
