@@ -1,6 +1,6 @@
 from tkinter import *
 import cv2 as cv
-from PIL import Image, ImageTk
+from PIL import ImageTk, Image
 import time
 from detect_GEAR import detect_teeth
 import os 
@@ -142,7 +142,9 @@ class App:
         canvas = Canvas(self.video_frame, width=self.vid.width, height= self.vid.height)
         canvas.grid(row =0 , column =0)
         self.vid = ImageTk.PhotoImage(Image.open(f'{self.gear_photo_name}'))
-        canvas.create_image(0,0, image=self.vid, anchor=NW) 
+        canvas.create_image(0,0, image=self.vid, anchor=NW)
+
+        self.window.after(getDelay_after_snapshot(), self.reset)
 
     def reset(self):        
         self.vid = Gear_capture(self.Video_source)
