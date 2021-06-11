@@ -1,8 +1,11 @@
 {
+     
     "Application_Name" : "Gear Detection System",
     "Video_Source" : 0,
     "Storage_Path" : "Images",
     "File_Type" : ".jpg",
+    "Delay_after_snapshot" :5000,
+
     "BilateralFilter_sigmaColor" : 175, 
     "BilateralFilter_sigmaSpace" : 175,
     "Median_Blurr" : 5,
@@ -10,3 +13,4 @@
     "Canny_thresh2" : 200,
     "Min_Near_Curve" : 19
 }
+
