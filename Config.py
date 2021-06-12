@@ -1,5 +1,5 @@
 import json
-configfile = open("config.json",'r')
+configfile = open("Config.json",'r')
 configData = configfile.read()
 configDict = json.loads(configData)
 # print(configDict)
