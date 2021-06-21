@@ -103,7 +103,7 @@ class App:
         self.num_total = self.num_pass + self.num_fail
         #Indicator for pass and fail
         self.indicator_text = 'PASS/FAIL'
-        if self.num_teeth < 40:
+        if self.num_teeth < getEquat_teeth():
             self.indicator_bg = 'Red'
             self.indicator_text = 'FAIL'
         else :
